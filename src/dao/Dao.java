@@ -3,11 +3,9 @@ package dao;
 import jakarta.persistence.*;
 
 import entity.*;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.CriteriaUpdate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Dao {
@@ -71,7 +69,7 @@ public class Dao {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 
-		String statement = "UPDATE SalesEvent SET amount = amount + " + amount;
+		String statement = "UPDATE SalesEvent SET amount = amount + " + new BigDecimal(amount);
 		Query query = em.createQuery(statement);
 		int affected = query.executeUpdate();
 
@@ -92,7 +90,6 @@ public class Dao {
 		em.getTransaction().commit();
 		em.close();
 		return affected;
-
 	}
 
 	//	a method that retrieves sales events whose amount is less than a given
@@ -108,8 +105,7 @@ public class Dao {
 		cq.select(salesEventRoot);
 		cq.where(cb.lt(salesEventRoot.get(SalesEvent_.amount), amount));
 		TypedQuery<SalesEvent> q = em.createQuery(cq);
-		List<SalesEvent> result = q.getResultList();
-		return result;
+		return q.getResultList();
 	}
 
 	//	a method that adds a service fee into all sales events
@@ -122,16 +118,23 @@ public class Dao {
 		Root<SalesEvent> salesEventRoot = cu.from(SalesEvent.class);
 		cu.set("amount", cb.sum(salesEventRoot.get("amount"), amount));
 
-		em.createQuery(cu).executeUpdate();
 		int result = em.createQuery(cu).executeUpdate();
 		em.getTransaction().commit();
 		return result;
 	}
 
 //	//	a method that deletes all sales events.
-//	public int deleteAllSalesEventsCriteria() {
-//
-//	}
+	public int deleteAllSalesEventsCriteria() {
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaDelete<SalesEvent> delete = cb.createCriteriaDelete(SalesEvent.class);
+
+		int affected = em.createQuery(delete).executeUpdate();
+		em.getTransaction().commit();
+		return affected;
+	}
 //	DELETE FROM salesevent;
 
 }

@@ -39,37 +39,54 @@ public class KassaApp {
     	}
 
 
-//		List<SalesEvent> beforeFee = dao.getSalesLessThan(50);
-//		System.out.println("Before update");
-//		for (SalesEvent s: beforeFee) {
-//			System.out.println(s.getAmount());
-//		}
-//
-//		int amountAffected =  dao.addServiceFee(2);
-//
-//		System.out.println(amountAffected);
-//		List<SalesEvent> afterFee = dao.getSalesLessThan(50);
-//		System.out.println("After update");
-//		for (SalesEvent s: afterFee) {
-//			System.out.println(s.getAmount());
-//		}
-//
-//		int rowsDeleted = dao.deleteAllSalesEvents();
-//		System.out.println("Deleted rows " + rowsDeleted);
-    	List<SalesEvent> beforeFeeCriteria = dao.getSalesLessThanCriteria(55);
-		System.out.println("Before");
+//		jpqlOperations(dao);
+		criteriaOperations(dao);
+	}
+
+	private static void jpqlOperations(Dao dao) {
+
+		List<SalesEvent> beforeFee = dao.getSalesLessThan(50);
+
+		System.out.println("Before update");
+		for (SalesEvent s: beforeFee) {
+			System.out.println(s);
+		}
+
+		int amountAffected =  dao.addServiceFee(10);
+
+		List<SalesEvent> afterFee = dao.getSalesLessThan(50);
+
+		System.out.println("After update");
+		System.out.println("Updated values " + amountAffected);
+		for (SalesEvent s: afterFee) {
+			System.out.println(s);
+		}
+
+		int rowsDeleted = dao.deleteAllSalesEvents();
+		System.out.println("Deleted rows " + rowsDeleted);
+	}
+
+	private static void criteriaOperations(Dao dao) {
+
+		List<SalesEvent> beforeFeeCriteria = dao.getSalesLessThanCriteria(50);
+		System.out.println("Before update");
 		for (SalesEvent s: beforeFeeCriteria) {
-			System.out.println(s.getAmount());
+			System.out.println(s);
 		}
 
 		int updatedValues = dao.addServiceFeeCriteria(10);
 
-		List<SalesEvent> afterFeeCriteria = dao.getSalesLessThanCriteria(55);
-		System.out.println("After");
-		System.out.println(updatedValues);
+
+		List<SalesEvent> afterFeeCriteria = dao.getSalesLessThanCriteria(50);
+
+		System.out.println("After update");
+		System.out.println("Updated values " + updatedValues);
 		for (SalesEvent s: afterFeeCriteria) {
-			System.out.println(s.getAmount());
+			System.out.println(s);
 		}
+
+		int deletedRowsCriteria = dao.deleteAllSalesEventsCriteria();
+		System.out.println("Deleted rows " + deletedRowsCriteria);
 	}
 }
 

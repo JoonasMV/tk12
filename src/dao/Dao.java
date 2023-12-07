@@ -1,11 +1,13 @@
 package dao;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
+import jakarta.persistence.*;
 
 import entity.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Root;
+
 import java.util.*;
 
 public class Dao {
@@ -92,6 +94,44 @@ public class Dao {
 		return affected;
 
 	}
+
+	//	a method that retrieves sales events whose amount is less than a given
+//	threshold (e.g. 20 euros). For each event, print the event data accompanied with
+//	the register data related to that event.
+
+	public List<SalesEvent> getSalesLessThanCriteria(float amount){
+		EntityManager em = emf.createEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<SalesEvent> cq = cb.createQuery(SalesEvent.class);
+		Root<SalesEvent> salesEventRoot = cq.from(SalesEvent.class);
+		cq.select(salesEventRoot);
+		cq.where(cb.lt(salesEventRoot.get(SalesEvent_.amount), amount));
+		TypedQuery<SalesEvent> q = em.createQuery(cq);
+		List<SalesEvent> result = q.getResultList();
+		return result;
+	}
+
+	//	a method that adds a service fee into all sales events
+	public int addServiceFeeCriteria(float amount) {
+		EntityManager em = emf.createEntityManager();
+		em.getTransaction().begin();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaUpdate<SalesEvent> cu = cb.createCriteriaUpdate(SalesEvent.class);
+		Root<SalesEvent> salesEventRoot = cu.from(SalesEvent.class);
+		cu.set("amount", cb.sum(salesEventRoot.get("amount"), amount));
+
+		em.createQuery(cu).executeUpdate();
+		int result = em.createQuery(cu).executeUpdate();
+		em.getTransaction().commit();
+		return result;
+	}
+
+//	//	a method that deletes all sales events.
+//	public int deleteAllSalesEventsCriteria() {
+//
+//	}
 //	DELETE FROM salesevent;
 
 }

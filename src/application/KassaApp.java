@@ -39,23 +39,37 @@ public class KassaApp {
     	}
 
 
-		List<SalesEvent> beforeFee = dao.getSalesLessThan(50);
-		System.out.println("Before update");
-		for (SalesEvent s: beforeFee) {
+//		List<SalesEvent> beforeFee = dao.getSalesLessThan(50);
+//		System.out.println("Before update");
+//		for (SalesEvent s: beforeFee) {
+//			System.out.println(s.getAmount());
+//		}
+//
+//		int amountAffected =  dao.addServiceFee(2);
+//
+//		System.out.println(amountAffected);
+//		List<SalesEvent> afterFee = dao.getSalesLessThan(50);
+//		System.out.println("After update");
+//		for (SalesEvent s: afterFee) {
+//			System.out.println(s.getAmount());
+//		}
+//
+//		int rowsDeleted = dao.deleteAllSalesEvents();
+//		System.out.println("Deleted rows " + rowsDeleted);
+    	List<SalesEvent> beforeFeeCriteria = dao.getSalesLessThanCriteria(55);
+		System.out.println("Before");
+		for (SalesEvent s: beforeFeeCriteria) {
 			System.out.println(s.getAmount());
 		}
 
-		int amountAffected =  dao.addServiceFee(2);
+		int updatedValues = dao.addServiceFeeCriteria(10);
 
-		System.out.println(amountAffected);
-		List<SalesEvent> afterFee = dao.getSalesLessThan(50);
-		System.out.println("After update");
-		for (SalesEvent s: afterFee) {
+		List<SalesEvent> afterFeeCriteria = dao.getSalesLessThanCriteria(55);
+		System.out.println("After");
+		System.out.println(updatedValues);
+		for (SalesEvent s: afterFeeCriteria) {
 			System.out.println(s.getAmount());
 		}
-
-		int rowsDeleted = dao.deleteAllSalesEvents();
-		System.out.println("Deleted rows " + rowsDeleted);
-    }
+	}
 }
 
